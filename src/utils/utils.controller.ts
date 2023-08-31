@@ -1,4 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+} from '@nestjs/common';
 import { UtilsService } from './utils.service';
 import { DriverOfDay, FastestLap } from './utils.models';
 
@@ -26,7 +32,7 @@ export class UtilsController {
       `Retrieving the driver of the day for race ${raceNumber} and year ${year}`,
     );
     if (year < 2023) {
-      throw Error('No data before 2023');
+      throw new BadRequestException('No data before 2023');
     }
     return await this.utilsService.getDriverOfDay(year, raceNumber);
   }

@@ -1,17 +1,5 @@
 ### get driver of the day
-GET http://localhost:3000/fantaformula1/driver-of-day/2023/6
+GET http://localhost:3000/fantaformula1/driver-of-day/2023/14
 
 ### get fastest lap
-GET http://localhost:3000/fantaformula1/fastest-lap/2023/6
-
-
-# ### Create a new message
-# POST http://localhost:3000/messages
-# Content-Type: application/json
-
-# {
-#     "content": "hi there"
-# }
-
-# ### get a particular message
-# GET http://localhost:3000/messages/9600
+GET http://localhost:3000/fantaformula1/fastest-lap/2023/1

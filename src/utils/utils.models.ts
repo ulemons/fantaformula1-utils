@@ -6,4 +6,5 @@ export interface FastestLap {
 
 export interface DriverOfDay {
   driver: string;
+  score: string;
 }

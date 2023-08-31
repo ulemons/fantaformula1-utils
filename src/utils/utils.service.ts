@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
 import { DriverOfDay, FastestLap } from './utils.models';
@@ -27,7 +27,9 @@ export class UtilsService {
         };
       }
     }
-    throw Error(`Error finding the result with index: ${raceNumber}`);
+    throw new BadRequestException(
+      `Error finding the result with index: ${raceNumber}`,
+    );
   }
 
   async getDriverOfDay(year: number, raceNumber: number): Promise<DriverOfDay> {
@@ -42,13 +44,21 @@ export class UtilsService {
       const filtered = article.textContent
         .split('\n')
         .filter((str) => str.replace(/\s/g, '').length > 0);
-      if (filtered[1]) {
-        drivers.push(filtered[1].split('-')[0].slice(0, -1));
+      if (filtered.length > 1) {
+        drivers.push(filtered[1]);
       }
     }
+    const totRaceFound = drivers.length;
+    if (raceNumber > totRaceFound) {
+      throw new BadRequestException(
+        `Error finding driver of the day for race ${raceNumber}, only ${totRaceFound} races found`,
+      );
+    }
     // The article page is ordered in the opposite order
+    const [driver, score] = drivers.reverse()[raceNumber - 1].split(' -');
     return {
-      driver: drivers.reverse()[raceNumber - 1],
+      driver,
+      score: score.trim(),
     };
   }
 }
