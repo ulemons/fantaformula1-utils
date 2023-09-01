@@ -42,4 +42,4 @@ In order to get the driver of the day you can just call the api:
 GET http://localhost:3000/fantaformula1/driver-of-day/2023/13
 ```
 
-If the race you selected is not yet completed you will get an error. At the moment only data from the 2023 ahead are supported.
+If the race you selected is not yet completed you will get an error. At the moment only data from the 2019 ahead are supported.

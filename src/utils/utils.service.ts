@@ -43,7 +43,8 @@ export class UtilsService {
     for (const article of articles) {
       const filtered = article.textContent
         .split('\n')
-        .filter((str) => str.replace(/\s/g, '').length > 0);
+        .filter((str) => str.replace(/\s/g, '').length > 0)
+        .map((str) => str.replace('–', '-'));
       if (filtered.length > 1) {
         drivers.push(filtered[1]);
       }
