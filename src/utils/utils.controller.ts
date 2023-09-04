@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { UtilsService } from './utils.service';
 import { DriverOfDay, FastestLap } from './utils.models';
-import { DRIVER_OF_DAY_SUPPORTED_YEAR } from 'src/constants';
+import { DRIVER_OF_DAY_SUPPORTED_YEAR } from './constants';
 
 @Controller('/fantaformula1')
 export class UtilsController {

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
 import { DriverOfDay, FastestLap } from './utils.models';
-import { DRIVER_OF_DAY_INDEX } from 'src/constants';
+import { DRIVER_OF_DAY_INDEX } from './constants';
 
 @Injectable()
 export class UtilsService {
