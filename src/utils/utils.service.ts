@@ -10,7 +10,6 @@ export class UtilsService {
     const response = await axios.get(
       `https://www.formula1.com/en/results.html/${year}/fastest-laps.html`,
     );
-
     const { window } = new JSDOM(response.data);
     const tBody = window.document.querySelectorAll('.resultsarchive-table');
 
