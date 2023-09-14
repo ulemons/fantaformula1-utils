@@ -8,11 +8,17 @@ import {
 import { UtilsService } from './utils.service';
 import { DriverOfDay, FastestLap } from './utils.models';
 import { DRIVER_OF_DAY_SUPPORTED_YEAR } from './constants';
+import { ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('fantaformula1')
 @Controller('/fantaformula1')
 export class UtilsController {
   constructor(private utilsService: UtilsService) {}
 
+  @ApiResponse({
+    status: 400,
+    description: 'Wrong combination of parameters for research',
+  })
   @Get('/fastest-lap/:year/:raceNumber')
   async getFastestLap(
     @Param('year') year: string,
@@ -24,7 +30,15 @@ export class UtilsController {
     return await this.utilsService.getFastestLap(year, raceNumber);
   }
 
+  @ApiResponse({
+    status: 400,
+    description: 'Wrong combination of parameters for research',
+  })
   @Get('/driver-of-day/:year/:raceNumber')
+  @ApiCreatedResponse({
+    description: 'The combination of parmaeters has found a result.',
+    type: DriverOfDay,
+  })
   async getDriverOfDay(
     @Param('year') year: number,
     @Param('raceNumber') raceNumber: number,
