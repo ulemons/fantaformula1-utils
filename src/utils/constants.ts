@@ -10,3 +10,4 @@ export const DRIVER_OF_DAY_INDEX = {
 };
 
 export const DRIVER_OF_DAY_SUPPORTED_YEAR = 2019;
+export const RACE_NUMBER_SUPPORTED_YEAR = 1950;

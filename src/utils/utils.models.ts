@@ -13,3 +13,7 @@ export class DriverOfDay {
   @ApiProperty()
   score: string;
 }
+
+export class TotalRaceNumber {
+  raceNumber: number;
+}

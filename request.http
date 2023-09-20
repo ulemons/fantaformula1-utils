@@ -3,3 +3,7 @@ GET http://localhost:3000/fantaformula1/driver-of-day/2023/12
 
 ### get fastest lap
 GET http://localhost:3000/fantaformula1/fastest-lap/2023/1
+
+
+### get race number
+GET http://localhost:3000/fantaformula1/total-race-number/1952

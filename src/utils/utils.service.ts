@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
-import { DriverOfDay, FastestLap } from './utils.models';
+import { DriverOfDay, FastestLap, TotalRaceNumber } from './utils.models';
 import { DRIVER_OF_DAY_INDEX } from './constants';
 
 @Injectable()
@@ -59,6 +59,20 @@ export class UtilsService {
     return {
       driver,
       score: score.trim(),
+    };
+  }
+
+  async getTotalRaceNumber(year: number): Promise<TotalRaceNumber> {
+    const response = await axios.get(
+      `https://www.formula1.com/en/results.html/${year}/races.html`,
+    );
+
+    const { window } = new JSDOM(response.data);
+    const races = window.document.querySelectorAll(
+      '.resultsarchive-filter-form-select',
+    );
+    return {
+      raceNumber: Object.keys(races[2]).length - 1,
     };
   }
 }
