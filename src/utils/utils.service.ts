@@ -66,7 +66,6 @@ export class UtilsService {
     const response = await axios.get(
       `https://www.formula1.com/en/results.html/${year}/races.html`,
     );
-
     const { window } = new JSDOM(response.data);
     const races = window.document.querySelectorAll(
       '.resultsarchive-filter-form-select',
