@@ -1,0 +1,26 @@
+service: fantaformula1-utils
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-plugin-optimize
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: us-east-2
+
+functions:
+  main:
+    handler: src/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{any+}
+
+package:
+  individually: true # Package each function separately
+  # exclude:
+  #   # - src/**
+  #   - node_modules/**  # Include node_modules in the deployment package
+  artifact: ./.serverless/main.zip
