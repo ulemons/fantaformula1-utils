@@ -4,6 +4,8 @@ plugins:
   - serverless-plugin-typescript
   - serverless-plugin-optimize
   - serverless-offline
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies
 
 provider:
   name: aws
@@ -18,9 +20,9 @@ functions:
           method: any
           path: /{any+}
 
-package:
-  individually: true # Package each function separately
-  # exclude:
-  #   # - src/**
-  #   - node_modules/**  # Include node_modules in the deployment package
-  artifact: ./.serverless/main.zip
+# package:
+#   individually: true # Package each function separately
+#   # exclude:
+#   #   # - src/**
+#   #   - node_modules/**  # Include node_modules in the deployment package
+#   artifact: ./.serverless/main.zip
