@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
-import { QualiRaceResult, QualiToRace } from './utils.models';
+import { QualiRaceResult, QualiToRace, Mode } from './utils.models';
 
 export class UtilsHelper {
   public static async getResults(
     year: number,
     selectedRace: string,
-    mode: string,
+    mode: Mode,
   ): Promise<QualiRaceResult[]> {
     const response = await axios.get(
       `https://www.formula1.com/en/results.html/${year}/races/${selectedRace}/${mode}.html`,

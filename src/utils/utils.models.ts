@@ -27,3 +27,5 @@ export class QualiRaceResult {
   pos: string;
   completedLaps?: number;
 }
+
+export type Mode = 'qualifying' | 'race-result';
