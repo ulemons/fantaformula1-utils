@@ -1,8 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
-import { DriverOfDay, FastestLap, TotalRaceNumber } from './utils.models';
+import {
+  DriverOfDay,
+  FastestLap,
+  QualiToRace,
+  TotalRaceNumber,
+} from './utils.models';
 import { DRIVER_OF_DAY_INDEX } from './constants';
+import { UtilsHelper } from './utils.helper';
 
 @Injectable()
 export class UtilsService {
@@ -73,5 +79,38 @@ export class UtilsService {
     return {
       raceNumber: Object.keys(races[2]).length - 1,
     };
+  }
+
+  async getQualiToRace(year: number, raceNumber: number): Promise<QualiToRace> {
+    const response = await axios.get(
+      `https://www.formula1.com/en/results.html/${year}/races.html`,
+    );
+    let { window } = new JSDOM(response.data);
+    const elements = window.document.querySelectorAll(
+      '.resultsarchive-filter-form-select',
+    );
+
+    const optionElements =
+      elements[elements.length - 1].querySelectorAll('option');
+
+    const allOptionValues = Array.from(optionElements).map(
+      (option) => option.value,
+    );
+    const selectedRace = allOptionValues[raceNumber];
+    console.log(`Selected Race: ${selectedRace}`);
+    const qualiResult = await UtilsHelper.getResults(
+      year,
+      selectedRace,
+      'qualifying',
+    );
+    console.log(`quali: ${JSON.stringify(qualiResult)}`);
+    const raceResult = await UtilsHelper.getResults(
+      year,
+      selectedRace,
+      'race-result',
+    );
+    console.log(`race: ${JSON.stringify(raceResult)}`);
+
+    return UtilsHelper.getDiferenceRaceQuali(raceResult, qualiResult);
   }
 }

@@ -17,3 +17,13 @@ export class DriverOfDay {
 export class TotalRaceNumber {
   raceNumber: number;
 }
+
+export class QualiToRace {
+  [key: string]: number;
+}
+
+export class QualiRaceResult {
+  driver: string;
+  pos: string;
+  completedLaps?: number;
+}

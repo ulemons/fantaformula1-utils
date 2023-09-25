@@ -6,7 +6,12 @@ import {
   Param,
 } from '@nestjs/common';
 import { UtilsService } from './utils.service';
-import { DriverOfDay, FastestLap, TotalRaceNumber } from './utils.models';
+import {
+  DriverOfDay,
+  FastestLap,
+  QualiToRace,
+  TotalRaceNumber,
+} from './utils.models';
 import {
   DRIVER_OF_DAY_SUPPORTED_YEAR,
   RACE_NUMBER_SUPPORTED_YEAR,
@@ -76,5 +81,21 @@ export class UtilsController {
       );
     }
     return await this.utilsService.getTotalRaceNumber(year);
+  }
+
+  @ApiResponse({
+    status: 400,
+    description: 'Wrong combination of parameters for research',
+  })
+  @Get('/quali-to-race/:year/:raceNumber')
+  @ApiCreatedResponse({
+    description: 'The combination of parmaeters has found a result.',
+    type: QualiToRace,
+  })
+  async getQualiToRace(
+    @Param('year') year: number,
+    @Param('raceNumber') raceNumber: number,
+  ): Promise<QualiToRace> {
+    return await this.utilsService.getQualiToRace(year, raceNumber);
   }
 }
