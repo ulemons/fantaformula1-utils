@@ -89,7 +89,6 @@ export class UtilsService {
     const elements = window.document.querySelectorAll(
       '.resultsarchive-filter-form-select',
     );
-
     const optionElements =
       elements[elements.length - 1].querySelectorAll('option');
 
@@ -98,18 +97,9 @@ export class UtilsService {
     );
     const selectedRace = allOptionValues[raceNumber];
     console.log(`Selected Race: ${selectedRace}`);
-    const qualiResult = await UtilsHelper.getResults(
-      year,
-      selectedRace,
-      'qualifying',
-    );
-    console.log(`quali: ${JSON.stringify(qualiResult)}`);
-    const raceResult = await UtilsHelper.getResults(
-      year,
-      selectedRace,
-      'race-result',
-    );
-    console.log(`race: ${JSON.stringify(raceResult)}`);
+    const getQuali = UtilsHelper.getResults(year, selectedRace, 'qualifying');
+    const getRace = UtilsHelper.getResults(year, selectedRace, 'race-result');
+    const [raceResult, qualiResult] = await Promise.all([getRace, getQuali]);
 
     return UtilsHelper.getDiferenceRaceQuali(raceResult, qualiResult);
   }
