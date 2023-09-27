@@ -25,9 +25,12 @@ export class UtilsHelper {
       if (mode == 'race-result') {
         completedLaps = parseInt(filtered[6]);
       }
+      console.log(filtered[4]);
+      console.log(filtered);
       result.push({
         driver: filtered[4],
-        pos: filtered[7] == 'DNF' ? 'NC' : filtered[0],
+        // pos: filtered[7] == 'DNF' && filtered[0] == 'NC' ? 'NC' : filtered[0],
+        pos: this.getPosition(filtered),
         completedLaps,
       });
     }
@@ -55,5 +58,16 @@ export class UtilsHelper {
     }
 
     return result;
+  }
+
+  private static getPosition(filtered: any) {
+    let position = 'NC';
+    if (filtered[7] !== 'DNF') {
+      position = filtered[7];
+    }
+    if (filtered[0] !== 'NC') {
+      position = filtered[0];
+    }
+    return position;
   }
 }

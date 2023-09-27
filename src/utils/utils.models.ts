@@ -28,4 +28,4 @@ export class QualiRaceResult {
   completedLaps?: number;
 }
 
-export type Mode = 'qualifying' | 'race-result';
+export type Mode = 'qualifying' | 'race-result' | 'starting-grid';

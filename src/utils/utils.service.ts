@@ -100,7 +100,8 @@ export class UtilsService {
     const getQuali = UtilsHelper.getResults(year, selectedRace, 'qualifying');
     const getRace = UtilsHelper.getResults(year, selectedRace, 'race-result');
     const [raceResult, qualiResult] = await Promise.all([getRace, getQuali]);
-
+    console.log(`Qualification: ${JSON.stringify(qualiResult)}`);
+    console.log(`race: ${JSON.stringify(raceResult)}`);
     return UtilsHelper.getDiferenceRaceQuali(raceResult, qualiResult);
   }
 }
