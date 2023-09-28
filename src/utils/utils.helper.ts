@@ -29,8 +29,7 @@ export class UtilsHelper {
       console.log(filtered);
       result.push({
         driver: filtered[4],
-        // pos: filtered[7] == 'DNF' && filtered[0] == 'NC' ? 'NC' : filtered[0],
-        pos: this.getPosition(filtered),
+        pos: this.getPosition(filtered, mode),
         completedLaps,
       });
     }
@@ -47,27 +46,32 @@ export class UtilsHelper {
       return result;
     }, {});
     let index = 0;
+
     for (let driver of race) {
       if (driver.pos == 'NC') {
         result[driver.driver] = driver.completedLaps == 0 ? -4 : -2;
         continue;
       }
-      result[driver.driver] =
-        parseInt(qualiMap[driver.driver]) - parseInt(driver.pos);
+      result[driver.driver] = parseInt(qualiMap[driver.driver]) - parseInt(driver.pos);
       index++;
     }
 
     return result;
   }
 
-  private static getPosition(filtered: any) {
-    let position = 'NC';
-    if (filtered[7] !== 'DNF') {
-      position = filtered[7];
+  private static getPosition(filtered: string[], mode: Mode) {
+    if (mode == 'qualifying') {
+      if (filtered[0] != 'NC') {
+        return filtered[0];
+      } else {
+        // TODO BUG ALERT: IF THE DRIVER DO NO TAKE PLACE TO THE QUALIFY IS SEND TO THE LAST POSITION
+        // WHAT IF WE HAVE 2 DRIVERS DOING THAT ?
+        return '20';
+      }
     }
-    if (filtered[0] !== 'NC') {
-      position = filtered[0];
+    if (filtered.includes('DNF') || filtered.includes('NC')) {
+      return 'NC';
     }
-    return position;
+    return filtered[0];
   }
 }

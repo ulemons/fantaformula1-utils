@@ -1,12 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
-import {
-  DriverOfDay,
-  FastestLap,
-  QualiToRace,
-  TotalRaceNumber,
-} from './utils.models';
+import { DriverOfDay, FastestLap, QualiToRace, TotalRaceNumber } from './utils.models';
 import { DRIVER_OF_DAY_INDEX } from './constants';
 import { UtilsHelper } from './utils.helper';
 
@@ -32,9 +27,7 @@ export class UtilsService {
         };
       }
     }
-    throw new BadRequestException(
-      `Error finding the result with index: ${raceNumber}`,
-    );
+    throw new BadRequestException(`Error finding the result with index: ${raceNumber}`);
   }
 
   async getDriverOfDay(year: number, raceNumber: number): Promise<DriverOfDay> {
@@ -73,9 +66,7 @@ export class UtilsService {
       `https://www.formula1.com/en/results.html/${year}/races.html`,
     );
     const { window } = new JSDOM(response.data);
-    const races = window.document.querySelectorAll(
-      '.resultsarchive-filter-form-select',
-    );
+    const races = window.document.querySelectorAll('.resultsarchive-filter-form-select');
     return {
       raceNumber: Object.keys(races[2]).length - 1,
     };
@@ -89,17 +80,13 @@ export class UtilsService {
     const elements = window.document.querySelectorAll(
       '.resultsarchive-filter-form-select',
     );
-    const optionElements =
-      elements[elements.length - 1].querySelectorAll('option');
+    const optionElements = elements[elements.length - 1].querySelectorAll('option');
 
-    const allOptionValues = Array.from(optionElements).map(
-      (option) => option.value,
-    );
+    const allOptionValues = Array.from(optionElements).map((option) => option.value);
     const selectedRace = allOptionValues[raceNumber];
     console.log(`Selected Race: ${selectedRace}`);
-    const getQuali = UtilsHelper.getResults(year, selectedRace, 'qualifying');
-    const getRace = UtilsHelper.getResults(year, selectedRace, 'race-result');
-    const [raceResult, qualiResult] = await Promise.all([getRace, getQuali]);
+    const qualiResult = await UtilsHelper.getResults(year, selectedRace, 'qualifying');
+    const raceResult = await UtilsHelper.getResults(year, selectedRace, 'race-result');
     console.log(`Qualification: ${JSON.stringify(qualiResult)}`);
     console.log(`race: ${JSON.stringify(raceResult)}`);
     return UtilsHelper.getDiferenceRaceQuali(raceResult, qualiResult);
