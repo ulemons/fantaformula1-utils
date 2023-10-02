@@ -3,17 +3,15 @@ import { JSDOM } from 'jsdom';
 import { QualiRaceResult, QualiToRace, Mode } from './utils.models';
 
 export class UtilsHelper {
-  public static async getResults(
+  public static async getResultsRace(
     year: number,
     selectedRace: string,
-    mode: Mode,
   ): Promise<QualiRaceResult[]> {
-    const response = await axios.get(
-      `https://www.formula1.com/en/results.html/${year}/races/${selectedRace}/${mode}.html`,
+    const tBody: NodeListOf<Element> = await UtilsHelper.getAllSelector(
+      `https://www.formula1.com/en/results.html/${year}/races/${selectedRace}/race-result.html`,
+      '.resultsarchive-table',
     );
-    const { window } = new JSDOM(response.data);
     let result: QualiRaceResult[] = [];
-    const tBody = window.document.querySelectorAll('.resultsarchive-table');
 
     for (const [index, row] of tBody[0].querySelectorAll('tr').entries()) {
       if (index == 0) continue;
@@ -21,16 +19,35 @@ export class UtilsHelper {
         .split('\n')
         .filter((str) => str.replace(/\s+/g, '').length > 0)
         .map((str) => str.replace(/\s+/g, ''));
-      let completedLaps;
-      if (mode == 'race-result') {
-        completedLaps = parseInt(filtered[6]);
-      }
-      console.log(filtered[4]);
-      console.log(filtered);
+      let completedLaps = parseInt(filtered[6]);
       result.push({
         driver: filtered[4],
-        pos: this.getPosition(filtered, mode),
+        pos: this.getPosition(filtered),
         completedLaps,
+      });
+    }
+    return result;
+  }
+
+  public static async getResultsQuali(
+    year: number,
+    selectedRace: string,
+  ): Promise<QualiRaceResult[]> {
+    const tBody: NodeListOf<Element> = await UtilsHelper.getAllSelector(
+      `https://www.formula1.com/en/results.html/${year}/races/${selectedRace}/qualifying.html`,
+      '.resultsarchive-table',
+    );
+    let result: QualiRaceResult[] = [];
+
+    for (const [index, row] of tBody[0].querySelectorAll('tr').entries()) {
+      if (index == 0) continue;
+      const filtered = row.textContent
+        .split('\n')
+        .filter((str) => str.replace(/\s+/g, '').length > 0)
+        .map((str) => str.replace(/\s+/g, ''));
+      result.push({
+        driver: filtered[4],
+        pos: index.toString(),
       });
     }
     return result;
@@ -59,19 +76,20 @@ export class UtilsHelper {
     return result;
   }
 
-  private static getPosition(filtered: string[], mode: Mode) {
-    if (mode == 'qualifying') {
-      if (filtered[0] != 'NC') {
-        return filtered[0];
-      } else {
-        // TODO BUG ALERT: IF THE DRIVER DO NO TAKE PLACE TO THE QUALIFY IS SEND TO THE LAST POSITION
-        // WHAT IF WE HAVE 2 DRIVERS DOING THAT ?
-        return '20';
-      }
-    }
+  private static getPosition(filtered: string[]) {
     if (filtered.includes('DNF') || filtered.includes('NC')) {
       return 'NC';
     }
     return filtered[0];
+  }
+
+  public static async getAllSelector(
+    url: string,
+    selectorName: string,
+  ): Promise<NodeListOf<Element>> {
+    const response = await axios.get(url);
+    let { window } = new JSDOM(response.data);
+    const elements = window.document.querySelectorAll(selectorName);
+    return elements;
   }
 }

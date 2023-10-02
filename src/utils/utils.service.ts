@@ -8,12 +8,10 @@ import { UtilsHelper } from './utils.helper';
 @Injectable()
 export class UtilsService {
   async getFastestLap(year: string, raceNumber: number): Promise<FastestLap> {
-    const response = await axios.get(
+    const tBody: NodeListOf<Element> = await UtilsHelper.getAllSelector(
       `https://www.formula1.com/en/results.html/${year}/fastest-laps.html`,
+      '.resultsarchive-table',
     );
-    const { window } = new JSDOM(response.data);
-    const tBody = window.document.querySelectorAll('.resultsarchive-table');
-
     for (const [index, row] of tBody[0].querySelectorAll('tr').entries()) {
       if (index == raceNumber) {
         const filtered = row.textContent
@@ -31,12 +29,10 @@ export class UtilsService {
   }
 
   async getDriverOfDay(year: number, raceNumber: number): Promise<DriverOfDay> {
-    const response = await axios.get(
+    const articles: NodeListOf<Element> = await UtilsHelper.getAllSelector(
       `https://www.formula1.com/en/latest/${DRIVER_OF_DAY_INDEX[year]}.html`,
+      '.f1-article--rich-text',
     );
-
-    const { window } = new JSDOM(response.data);
-    const articles = window.document.querySelectorAll('.f1-article--rich-text');
     const drivers = [];
     for (const article of articles) {
       const filtered = article.textContent
@@ -62,22 +58,18 @@ export class UtilsService {
   }
 
   async getTotalRaceNumber(year: number): Promise<TotalRaceNumber> {
-    const response = await axios.get(
+    const races: NodeListOf<Element> = await UtilsHelper.getAllSelector(
       `https://www.formula1.com/en/results.html/${year}/races.html`,
+      '.resultsarchive-filter-form-select',
     );
-    const { window } = new JSDOM(response.data);
-    const races = window.document.querySelectorAll('.resultsarchive-filter-form-select');
     return {
       raceNumber: Object.keys(races[2]).length - 1,
     };
   }
 
   async getQualiToRace(year: number, raceNumber: number): Promise<QualiToRace> {
-    const response = await axios.get(
+    const elements: NodeListOf<Element> = await UtilsHelper.getAllSelector(
       `https://www.formula1.com/en/results.html/${year}/races.html`,
-    );
-    let { window } = new JSDOM(response.data);
-    const elements = window.document.querySelectorAll(
       '.resultsarchive-filter-form-select',
     );
     const optionElements = elements[elements.length - 1].querySelectorAll('option');
@@ -85,10 +77,9 @@ export class UtilsService {
     const allOptionValues = Array.from(optionElements).map((option) => option.value);
     const selectedRace = allOptionValues[raceNumber];
     console.log(`Selected Race: ${selectedRace}`);
-    const qualiResult = await UtilsHelper.getResults(year, selectedRace, 'qualifying');
-    const raceResult = await UtilsHelper.getResults(year, selectedRace, 'race-result');
-    console.log(`Qualification: ${JSON.stringify(qualiResult)}`);
-    console.log(`race: ${JSON.stringify(raceResult)}`);
+    const qualification = UtilsHelper.getResultsQuali(year, selectedRace);
+    const race = UtilsHelper.getResultsRace(year, selectedRace);
+    const [qualiResult, raceResult] = await Promise.all([qualification, race]);
     return UtilsHelper.getDiferenceRaceQuali(raceResult, qualiResult);
   }
 }
