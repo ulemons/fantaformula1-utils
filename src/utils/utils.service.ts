@@ -1,6 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import axios from 'axios';
-import { JSDOM } from 'jsdom';
 import { DriverOfDay, FastestLap, QualiToRace, TotalRaceNumber } from './utils.models';
 import { DRIVER_OF_DAY_INDEX } from './constants';
 import { UtilsHelper } from './utils.helper';
@@ -73,7 +71,6 @@ export class UtilsService {
       '.resultsarchive-filter-form-select',
     );
     const optionElements = elements[elements.length - 1].querySelectorAll('option');
-
     const allOptionValues = Array.from(optionElements).map((option) => option.value);
     const selectedRace = allOptionValues[raceNumber];
     console.log(`Selected Race: ${selectedRace}`);

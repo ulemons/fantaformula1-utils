@@ -76,13 +76,6 @@ export class UtilsHelper {
     return result;
   }
 
-  private static getPosition(filtered: string[]) {
-    if (filtered.includes('DNF') || filtered.includes('NC')) {
-      return 'NC';
-    }
-    return filtered[0];
-  }
-
   public static async getAllSelector(
     url: string,
     selectorName: string,
@@ -91,5 +84,12 @@ export class UtilsHelper {
     let { window } = new JSDOM(response.data);
     const elements = window.document.querySelectorAll(selectorName);
     return elements;
+  }
+
+  private static getPosition(filtered: string[]) {
+    if (filtered.includes('DNF') || filtered.includes('NC')) {
+      return 'NC';
+    }
+    return filtered[0];
   }
 }

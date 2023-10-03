@@ -36,6 +36,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.2.4",
     "@nestjs/swagger": "^7.1.11",
+    "@types/winston": "^2.4.4",
     "aws-lambda": "^1.0.7",
     "aws-serverless-express": "^3.4.0",
     "axios": "^1.5.0",
@@ -84,7 +85,8 @@
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "winston": "^3.10.0"
   },
   "jest": {
     "moduleDirectories": [
