@@ -22,7 +22,7 @@ export class QualiToRace {
   [key: string]: number;
 }
 
-export class QualiRaceResult {
+export class DriverResult {
   driver: string;
   pos: string;
   completedLaps?: number;

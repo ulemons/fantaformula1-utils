@@ -1,17 +1,17 @@
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
-import { QualiRaceResult, QualiToRace, Mode } from './utils.models';
+import { QualiToRace, DriverResult } from './utils.models';
 
 export class UtilsHelper {
   public static async getResultsRace(
     year: number,
     selectedRace: string,
-  ): Promise<QualiRaceResult[]> {
+  ): Promise<DriverResult[]> {
     const tBody: NodeListOf<Element> = await UtilsHelper.getAllSelector(
       `https://www.formula1.com/en/results.html/${year}/races/${selectedRace}/race-result.html`,
       '.resultsarchive-table',
     );
-    let result: QualiRaceResult[] = [];
+    let result: DriverResult[] = [];
 
     for (const [index, row] of tBody[0].querySelectorAll('tr').entries()) {
       if (index == 0) continue;
@@ -32,12 +32,12 @@ export class UtilsHelper {
   public static async getResultsQuali(
     year: number,
     selectedRace: string,
-  ): Promise<QualiRaceResult[]> {
+  ): Promise<DriverResult[]> {
     const tBody: NodeListOf<Element> = await UtilsHelper.getAllSelector(
       `https://www.formula1.com/en/results.html/${year}/races/${selectedRace}/qualifying.html`,
       '.resultsarchive-table',
     );
-    let result: QualiRaceResult[] = [];
+    let result: DriverResult[] = [];
 
     for (const [index, row] of tBody[0].querySelectorAll('tr').entries()) {
       if (index == 0) continue;
@@ -54,25 +54,24 @@ export class UtilsHelper {
   }
 
   public static getDiferenceRaceQuali(
-    race: QualiRaceResult[],
-    quali: QualiRaceResult[],
+    race: DriverResult[],
+    qualification: DriverResult[],
   ): QualiToRace {
     let result: QualiToRace = {};
-    let qualiMap = quali.reduce((result, item) => {
+    const qualiMap = qualification.reduce((result, item) => {
       result[item.driver] = item.pos;
       return result;
     }, {});
-    let index = 0;
 
     for (let driver of race) {
+      let score = 0;
       if (driver.pos == 'NC') {
-        result[driver.driver] = driver.completedLaps == 0 ? -4 : -2;
-        continue;
+        score = driver.completedLaps == 0 ? -4 : -2;
+      } else {
+        score = parseInt(qualiMap[driver.driver]) - parseInt(driver.pos);
       }
-      result[driver.driver] = parseInt(qualiMap[driver.driver]) - parseInt(driver.pos);
-      index++;
+      result[driver.driver] = score;
     }
-
     return result;
   }
 
@@ -87,9 +86,6 @@ export class UtilsHelper {
   }
 
   private static getPosition(filtered: string[]) {
-    if (filtered.includes('DNF') || filtered.includes('NC')) {
-      return 'NC';
-    }
-    return filtered[0];
+    return filtered.includes('DNF') || filtered.includes('NC') ? 'NC' : filtered[0];
   }
 }
