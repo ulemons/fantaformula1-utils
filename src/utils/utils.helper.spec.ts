@@ -220,4 +220,17 @@ describe('UtilsHelper', () => {
     expect(resp['HUL']).toEqual(4);
     expect(resp['NOR']).toEqual(1);
   });
+
+  it('should map correctly the race 18 of year 2023 ', async () => {
+    const resp = await service.getQualiToRace(2023, 18);
+    expect(resp['BOT']).toEqual(1);
+    expect(resp['HAM']).toEqual(-4);
+    expect(resp['STR']).toEqual(6);
+    expect(resp['GAS']).toEqual(-5);
+    expect(resp['ALO']).toEqual(-2);
+    expect(resp['ZHO']).toEqual(11);
+    expect(resp['RUS']).toEqual(-2);
+    expect(resp['HUL']).toEqual(-1);
+    expect(resp['NOR']).toEqual(7);
+  });
 });
